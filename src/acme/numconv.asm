@@ -26,7 +26,9 @@ jsr runtextout
 pla
 sta screenpos
 
-;Binärausgabe
+ldx #$0c
+ldy #$08
+jsr binaryout
 
 ;Hexausgabe
 
@@ -55,6 +57,35 @@ runtext
   !text "RUN:( ) "
   !byte $00 ;marker for text end
 
-;Sub Binärausgabe
+;print character at A in binary at position X/Y
+;A = char to be shown in binary
+;X = row of output start
+;Y = column of output start
+;returns: nothing
+;changes: X,Y,SR
+binaryout
+  pha ;store character, because A will be used
+  clc ;clear carry to set and not get cursor
+  jsr setcursor ;set cursor to X/Y
+  lda #"%" ; prefix for binary number
+  jsr chrout
+  pla ;restore char to be printed in binary
+  pha ;and store it for later
+
+  ldy #$07 ;binary representation will have 8 digits
+  binoutloop
+    ldx #"0" ;default is zero
+    asl ;shift msb into carry
+    bcc out ;if carry is zero, print
+    inx ;if not zero, increaese to one
+  out
+    pha ;store char
+    txa ;move binary digit to A
+    jsr chrout ;print A on screen
+    pla ;load char
+    dey ;decrease loop var
+    bpl binoutloop ;continue loop until Y is negative
+    pla ;restore original A
+    rts
 
 ;Sub Hexausgabe
