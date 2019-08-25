@@ -30,7 +30,9 @@ ldx #$0c
 ldy #$08
 jsr binaryout
 
-;Hexausgabe
+ldx #$0c
+ldy #$12
+jsr hexout
 
 rts ;back to BASIC
 
@@ -88,4 +90,35 @@ binaryout
     pla ;restore original A
     rts
 
-;Sub Hexausgabe
+;print character at A in hex at position X/Y
+;A = char to be shown in binary
+;X = row of output start
+;Y = column of output start
+;returns: nothing
+;changes: X,Y,S
+hexout
+  pha ;store character, because A will be used
+  clc ;clear carry to set and not get cursor
+  jsr setcursor ;set cursor to X/Y
+  lda #"$" ;prefix for hex number
+  jsr chrout
+  pla ;restore char to be printed in hex
+  pha ;and store it for later
+  pha ;again because of LSR and chrout
+  lsr ;move MSB into LSB
+  lsr
+  lsr
+  lsr
+  tax ;
+  lda possiblehexchars,x ;char for upper nibble
+  jsr chrout ;print char
+  pla ;restore char to be printed for next nibble
+  and #$0f ;mask upper nibble
+  tax ;
+  lda possiblehexchars, x ;char for lower nibble
+  jsr chrout ;print char
+  pla ;restore akku
+  rts
+
+possiblehexchars
+  !text "0123456789ABCDEF"
