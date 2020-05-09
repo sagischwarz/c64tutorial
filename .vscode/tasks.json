@@ -4,7 +4,7 @@
       {
         "label": "make",
         "type": "shell",
-        "command": "make ${fileBasenameNoExtension}.prg",
+        "command": "make ${fileBasename}",
         "group": {
           "kind": "build",
           "isDefault": true
@@ -14,7 +14,7 @@
       {
         "label": "run",
         "type": "shell",
-        "command": "x64sc bin/${fileBasenameNoExtension}.prg",
+        "command": "x64sc bin/${fileBasename}",
         "problemMatcher": []
       },
       {

@@ -1,7 +1,7 @@
-%.prg : src/acme/%.asm
+%.acme : src/acme/%.acme
 		mkdir -p bin
 		acme -f cbm -o bin/$@ $<
 
-%.prg : src/basic/%.bas
+%.bas : src/basic/%.bas
 		mkdir -p bin
 		petcat -w2 -o bin/$@ $<
